@@ -219,29 +219,154 @@
             transform: scale(0.95);
         }
 
+        /* ===== IMPROVED PHOTO GRID ===== */
         .photo-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-            gap: 12px;
-            margin: 20px 0 16px;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin: 24px 0 20px;
+            padding: 0 4px;
         }
 
-        .photo-grid .placeholder {
-            background: rgba(255, 255, 255, 0.05);
+        .photo-item {
+            position: relative;
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
             border-radius: 20px;
-            padding: 28px 6px;
+            padding: 0;
+            overflow: hidden;
+            aspect-ratio: 1 / 1;
+            border: 2px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .photo-item:hover {
+            transform: translateY(-6px) scale(1.02);
+            border-color: rgba(240, 194, 127, 0.4);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        .photo-item:active {
+            transform: scale(0.96);
+        }
+
+        .photo-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.5s ease;
+        }
+
+        .photo-item:hover img {
+            transform: scale(1.08);
+        }
+
+        .photo-item .photo-placeholder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.01));
             color: rgba(255, 255, 255, 0.3);
-            font-size: clamp(13px, 3vw, 15px);
-            border: 1px dashed rgba(255, 255, 255, 0.06);
-            backdrop-filter: blur(4px);
-            -webkit-backdrop-filter: blur(4px);
-            transition: 0.2s;
+            font-size: clamp(32px, 8vw, 48px);
+            transition: all 0.3s ease;
+            padding: 12px;
+            text-align: center;
         }
 
-        .photo-grid .placeholder:hover {
-            background: rgba(255, 255, 255, 0.08);
+        .photo-item .photo-placeholder span {
+            font-size: clamp(11px, 2.5vw, 14px);
+            margin-top: 8px;
+            color: rgba(255, 255, 255, 0.25);
+            font-style: italic;
         }
 
+        .photo-item:hover .photo-placeholder {
+            background: rgba(240, 194, 127, 0.08);
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        /* Label overlay for photo items */
+        .photo-item .photo-label {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 12px 10px 10px;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.6));
+            color: rgba(255, 255, 255, 0.85);
+            font-size: clamp(12px, 2.8vw, 15px);
+            font-family: 'Georgia', serif;
+            font-style: italic;
+            letter-spacing: 0.5px;
+            opacity: 0;
+            transform: translateY(8px);
+            transition: all 0.4s ease;
+            text-align: center;
+        }
+
+        .photo-item:hover .photo-label {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Full-width photo on larger screens */
+        @media (min-width: 600px) {
+            .photo-grid {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 18px;
+            }
+            
+            .photo-item:first-child {
+                grid-column: span 2;
+                grid-row: span 2;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .photo-grid {
+                gap: 12px;
+            }
+            .photo-item {
+                border-radius: 16px;
+            }
+            .photo-item .photo-label {
+                padding: 8px 6px 6px;
+                font-size: 11px;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .photo-grid {
+                gap: 10px;
+            }
+        }
+
+        /* Landscape phone support */
+        @media (max-height: 600px) and (orientation: landscape) {
+            .photo-grid {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 10px;
+            }
+            .photo-item {
+                aspect-ratio: 4/3;
+            }
+            .photo-item .photo-placeholder {
+                font-size: 28px;
+            }
+            .photo-item .photo-placeholder span {
+                font-size: 10px;
+            }
+        }
+
+        /* ===== REST OF STYLES ===== */
         .heart-wave {
             font-size: clamp(40px, 10vw, 60px);
             animation: float 2.4s ease-in-out infinite;
@@ -282,29 +407,9 @@
                 min-width: 80px;
                 font-size: 15px;
             }
-            .photo-grid {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 10px;
-            }
-            .photo-grid .placeholder {
-                padding: 20px 4px;
-                font-size: 14px;
-            }
         }
 
-        @media (max-width: 380px) {
-            .photo-grid {
-                grid-template-columns: 1fr 1fr;
-                gap: 8px;
-            }
-            .nav-btn {
-                padding: 10px 14px;
-                min-width: 70px;
-                font-size: 13px;
-            }
-        }
-
-        /* landscape phone support */
+        /* landscape phone support for slides */
         @media (max-height: 600px) and (orientation: landscape) {
             #login-screen {
                 padding: 24px 20px;
@@ -327,12 +432,6 @@
             .nav-btn {
                 padding: 10px 18px;
                 font-size: 14px;
-            }
-            .photo-grid {
-                gap: 8px;
-            }
-            .photo-grid .placeholder {
-                padding: 16px 4px;
             }
         }
     </style>
@@ -376,18 +475,47 @@
             <button class="nav-btn primary" onclick="goToSlide(3)">Continue →</button>
         </div>
 
-        <!-- SLIDE 3: Photos (placeholders) -->
+        <!-- SLIDE 3: Photos -->
         <div class="slide" id="slide-3">
             <span class="big-emoji">📸</span>
             <h2>Our Memories</h2>
             <p>Every moment with you is a treasure I keep close.</p>
+            
             <div class="photo-grid">
-                <div class="placeholder">📷 You &amp; Me</div>
-                <div class="placeholder">📷 Sunset</div>
-                <div class="placeholder">📷 Your Smile</div>
-                <div class="placeholder">📷 Us</div>
+                <div class="photo-item">
+                    <div class="photo-placeholder">
+                        <img src="img4.jpeg" alt="">
+                        <span>You &amp; Me</span>
+                    </div>
+                    <div class="photo-label">✨ Together</div>
+                </div>
+                <div class="photo-item">
+                    <div class="photo-placeholder">
+                        <img src="img3.jpeg" alt="">
+                        <span>Sunset</span>
+                    </div>
+                    <div class="photo-label">🌅 Golden Hour</div>
+                </div>
+                <div class="photo-item">
+                    <div class="photo-placeholder">
+                        <img src="img2.jpeg" alt="">
+                        <span>Your Smile</span>
+                    </div>
+                    <div class="photo-label">💫 Radiant</div>
+                </div>
+                <div class="photo-item">
+                    <div class="photo-placeholder">
+                        <img src="img1.jpeg" alt="">
+                        <span>Us</span>
+                    </div>
+                    <div class="photo-label">❤️ Forever</div>
+                </div>
             </div>
-            <p style="font-size:clamp(13px, 3.2vw, 16px); opacity:0.6; margin-top: 4px;">(Replace with your real photos!)</p>
+            
+            <p style="font-size:clamp(13px, 3.2vw, 16px); opacity:0.6; margin-top: 4px;">
+                💡 Cheers to another year of laughing together & loving each other!
+            </p>
+            
             <button class="nav-btn" onclick="goToSlide(2)">← Back</button>
             <button class="nav-btn primary" onclick="goToSlide(4)">Continue →</button>
         </div>
@@ -395,7 +523,7 @@
         <!-- SLIDE 4: Love Letter -->
         <div class="slide" id="slide-4">
             <span class="big-emoji">💌</span>
-            <h2>A Letter From Your First Mate</h2>
+            <h2>Pancha❤️,The Name My Heart Smiles At..</h2>
             <p style="font-size: clamp(15px, 3.8vw, 18px);">
                 <em>
                     "My dearest Sailor,<br><br>
@@ -407,7 +535,7 @@
                     I'll be counting the waves until you're home.
                     Until then, know that you are loved beyond measure.
                     Happy Birthday, my Captain."<br><br>
-                    ❤️ Your [Your Name]
+                    ❤️ Your PETROL BOMB 💣💥
                 </em>
             </p>
             <button class="nav-btn" onclick="goToSlide(3)">← Back</button>
@@ -425,7 +553,7 @@
             <div class="heart-wave">💙⚓💙</div>
             <p style="margin-top:20px; font-size:clamp(14px, 3.5vw, 17px); opacity:0.6;">
                 Made with all my love,<br>
-                [Your Name]
+                Your Chuti ❤️
             </p>
             <button class="nav-btn" onclick="goToSlide(4)">← Read Again</button>
             <button class="nav-btn primary" onclick="triggerConfetti()">🎊 Celebrate!</button>
@@ -495,9 +623,7 @@
             })();
         }
 
-        // small extra burst on login
         window.addEventListener('load', function() {
-            // pre-focus input on mobile
             if (window.innerWidth < 600) {
                 passwordInput.focus();
             }

@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
+    <title>Happy Birthday, My Captain ⚓</title>
+
+    <!-- Confetti library -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(145deg, #0b1a2e, #1a3a4a);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 16px;
+        }
+
+        /* ===== LOGIN SCREEN ===== */
+        #login-screen {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 40px 24px;
+            border-radius: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            max-width: 420px;
+            width: 100%;
+            animation: fadeIn 0.8s ease;
+            margin: 0 auto;
+        }
+
+        #login-screen h1 {
+            color: #f0e6d3;
+            font-size: clamp(26px, 7vw, 34px);
+            font-weight: 300;
+            letter-spacing: 2px;
+            margin-bottom: 6px;
+        }
+
+        #login-screen .sub {
+            color: #8bb3c9;
+            font-size: clamp(13px, 3.5vw, 16px);
+            margin-bottom: 28px;
+            font-style: italic;
+        }
+
+        #login-screen input {
+            width: 100%;
+            padding: 16px 20px;
+            border-radius: 60px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.06);
+            color: #fff;
+            font-size: clamp(16px, 4vw, 20px);
+            text-align: center;
+            outline: none;
+            transition: 0.3s;
+            letter-spacing: 2px;
+            font-family: 'Georgia', serif;
+        }
+
+        #login-screen input::placeholder {
+            color: rgba(255, 255, 255, 0.25);
+            letter-spacing: 1px;
+            font-size: clamp(14px, 3.5vw, 17px);
+        }
+
+        #login-screen input:focus {
+            border-color: #f0c27f;
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 0 3px rgba(240, 194, 127, 0.15);
+        }
+
+        #login-screen button {
+            margin-top: 22px;
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 60px;
+            background: linear-gradient(135deg, #f0c27f, #d4a373);
+            color: #0b1a2e;
+            font-size: clamp(18px, 4.5vw, 22px);
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+            letter-spacing: 1px;
+            font-family: 'Georgia', serif;
+            box-shadow: 0 6px 20px rgba(240, 194, 127, 0.2);
+        }
+
+        #login-screen button:hover {
+            transform: scale(1.02);
+            box-shadow: 0 8px 30px rgba(240, 194, 127, 0.35);
+        }
+
+        #login-screen button:active {
+            transform: scale(0.97);
+        }
+
+        #login-error {
+            color: #ff8a80;
+            font-size: clamp(13px, 3vw, 15px);
+            margin-top: 16px;
+            display: none;
+            background: rgba(255, 138, 128, 0.08);
+            padding: 8px 12px;
+            border-radius: 40px;
+            border: 1px solid rgba(255, 138, 128, 0.15);
+        }
+
+        .anchor-icon {
+            font-size: clamp(48px, 12vw, 64px);
+            margin-bottom: 6px;
+            display: block;
+        }
+
+        /* ===== MAIN CONTENT ===== */
+        #main-content {
+            display: none;
+            width: 100%;
+            max-width: 700px;
+            animation: fadeIn 0.9s ease;
+            margin: 0 auto;
+        }
+
+        .slide {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 36px 20px;
+            border-radius: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+            text-align: center;
+            margin-bottom: 18px;
+            display: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .slide.active {
+            display: block;
+        }
+
+        .slide h2 {
+            color: #f0e6d3;
+            font-size: clamp(26px, 7vw, 38px);
+            font-weight: 300;
+            margin-bottom: 12px;
+            letter-spacing: 1px;
+        }
+
+        .slide p {
+            color: #c9dbe9;
+            font-size: clamp(16px, 4vw, 20px);
+            line-height: 1.7;
+            max-width: 520px;
+            margin: 0 auto 20px;
+            padding: 0 4px;
+        }
+
+        .slide .big-emoji {
+            font-size: clamp(60px, 15vw, 85px);
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: #f0e6d3;
+            padding: 14px 28px;
+            border-radius: 60px;
+            font-size: clamp(15px, 4vw, 18px);
+            cursor: pointer;
+            transition: 0.25s;
+            margin: 6px 4px;
+            font-family: 'Georgia', serif;
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            min-width: 100px;
+            touch-action: manipulation;
+        }
+
+        .nav-btn:hover {
+            background: rgba(240, 194, 127, 0.15);
+            border-color: #f0c27f;
+        }
+
+        .nav-btn:active {
+            transform: scale(0.94);
+        }
+
+        .nav-btn.primary {
+            background: linear-gradient(135deg, #f0c27f, #d4a373);
+            color: #0b1a2e;
+            font-weight: bold;
+            border: none;
+            box-shadow: 0 4px 16px rgba(240, 194, 127, 0.2);
+        }
+
+        .nav-btn.primary:hover {
+            transform: scale(1.02);
+            box-shadow: 0 6px 24px rgba(240, 194, 127, 0.3);
+        }
+
+        .nav-btn.primary:active {
+            transform: scale(0.95);
+        }
+
+        .photo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 12px;
+            margin: 20px 0 16px;
+        }
+
+        .photo-grid .placeholder {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 28px 6px;
+            color: rgba(255, 255, 255, 0.3);
+            font-size: clamp(13px, 3vw, 15px);
+            border: 1px dashed rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            transition: 0.2s;
+        }
+
+        .photo-grid .placeholder:hover {
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .heart-wave {
+            font-size: clamp(40px, 10vw, 60px);
+            animation: float 2.4s ease-in-out infinite;
+            display: inline-block;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-12px); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(18px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .signature {
+            color: rgba(255, 255, 255, 0.25);
+            font-size: clamp(12px, 3vw, 14px);
+            margin-top: 18px;
+            font-style: italic;
+            letter-spacing: 1px;
+            text-align: center;
+        }
+
+        /* extra responsive fine-tune */
+        @media (max-width: 480px) {
+            #login-screen {
+                padding: 32px 18px;
+                border-radius: 32px;
+            }
+            .slide {
+                padding: 28px 16px;
+                border-radius: 32px;
+            }
+            .nav-btn {
+                padding: 12px 18px;
+                min-width: 80px;
+                font-size: 15px;
+            }
+            .photo-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+            }
+            .photo-grid .placeholder {
+                padding: 20px 4px;
+                font-size: 14px;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .photo-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 8px;
+            }
+            .nav-btn {
+                padding: 10px 14px;
+                min-width: 70px;
+                font-size: 13px;
+            }
+        }
+
+        /* landscape phone support */
+        @media (max-height: 600px) and (orientation: landscape) {
+            #login-screen {
+                padding: 24px 20px;
+            }
+            .slide {
+                padding: 20px 16px;
+            }
+            .slide .big-emoji {
+                font-size: 48px;
+                margin-bottom: 4px;
+            }
+            .slide h2 {
+                font-size: 24px;
+                margin-bottom: 6px;
+            }
+            .slide p {
+                font-size: 15px;
+                margin-bottom: 12px;
+            }
+            .nav-btn {
+                padding: 10px 18px;
+                font-size: 14px;
+            }
+            .photo-grid {
+                gap: 8px;
+            }
+            .photo-grid .placeholder {
+                padding: 16px 4px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== LOGIN SCREEN ===== -->
+    <div id="login-screen">
+        <span class="anchor-icon">⚓</span>
+        <h1>For My Captain</h1>
+        <p class="sub">A birthday surprise just for you</p>
+
+        <input type="text" id="password-input" placeholder="Type my pet name..." autocomplete="off" />
+        <button id="login-btn">Unlock →</button>
+        <p id="login-error">❌ That's not my pet name, try again 💕</p>
+    </div>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <div id="main-content">
+
+        <!-- SLIDE 1: Welcome -->
+        <div class="slide active" id="slide-1">
+            <span class="big-emoji">🌊</span>
+            <h2>Happy Birthday, My Captain!</h2>
+            <p>
+                You made it past the login — just like you always find your way back to me
+                across any ocean. This is all for you.
+            </p>
+            <button class="nav-btn primary" onclick="goToSlide(2)">Continue →</button>
+        </div>
+
+        <!-- SLIDE 2: Distance & Love -->
+        <div class="slide" id="slide-2">
+            <span class="big-emoji">⛵</span>
+            <h2>Wherever You Are...</h2>
+            <p>
+                No matter how many nautical miles separate us, my heart beats in time with
+                yours. The sea may be wide, but my love for you is deeper.
+            </p>
+            <button class="nav-btn" onclick="goToSlide(1)">← Back</button>
+            <button class="nav-btn primary" onclick="goToSlide(3)">Continue →</button>
+        </div>
+
+        <!-- SLIDE 3: Photos (placeholders) -->
+        <div class="slide" id="slide-3">
+            <span class="big-emoji">📸</span>
+            <h2>Our Memories</h2>
+            <p>Every moment with you is a treasure I keep close.</p>
+            <div class="photo-grid">
+                <div class="placeholder">📷 You &amp; Me</div>
+                <div class="placeholder">📷 Sunset</div>
+                <div class="placeholder">📷 Your Smile</div>
+                <div class="placeholder">📷 Us</div>
+            </div>
+            <p style="font-size:clamp(13px, 3.2vw, 16px); opacity:0.6; margin-top: 4px;">(Replace with your real photos!)</p>
+            <button class="nav-btn" onclick="goToSlide(2)">← Back</button>
+            <button class="nav-btn primary" onclick="goToSlide(4)">Continue →</button>
+        </div>
+
+        <!-- SLIDE 4: Love Letter -->
+        <div class="slide" id="slide-4">
+            <span class="big-emoji">💌</span>
+            <h2>A Letter From Your First Mate</h2>
+            <p style="font-size: clamp(15px, 3.8vw, 18px);">
+                <em>
+                    "My dearest Sailor,<br><br>
+                    On your birthday, I wish I could be there to hold you,
+                    to kiss your forehead, and to tell you in person how
+                    proud I am of you. You carry the weight of the sea
+                    with such grace, and you still find room in your heart
+                    for me.<br><br>
+                    I'll be counting the waves until you're home.
+                    Until then, know that you are loved beyond measure.
+                    Happy Birthday, my Captain."<br><br>
+                    ❤️ Your [Your Name]
+                </em>
+            </p>
+            <button class="nav-btn" onclick="goToSlide(3)">← Back</button>
+            <button class="nav-btn primary" onclick="goToSlide(5)">Surprise →</button>
+        </div>
+
+        <!-- SLIDE 5: Finale with Confetti -->
+        <div class="slide" id="slide-5">
+            <span class="big-emoji">🎉</span>
+            <h2>HAPPY BIRTHDAY!</h2>
+            <p>
+                I love you to the horizon and back, Captain.<br>
+                Come home soon. 🥂
+            </p>
+            <div class="heart-wave">💙⚓💙</div>
+            <p style="margin-top:20px; font-size:clamp(14px, 3.5vw, 17px); opacity:0.6;">
+                Made with all my love,<br>
+                [Your Name]
+            </p>
+            <button class="nav-btn" onclick="goToSlide(4)">← Read Again</button>
+            <button class="nav-btn primary" onclick="triggerConfetti()">🎊 Celebrate!</button>
+        </div>
+
+        <div class="signature">⛵ Made just for you ⛵</div>
+    </div>
+
+    <script>
+        // ===== LOGIN =====
+        const PET_NAME = "chuti"; // 👈 CHANGE to your pet name!
+
+        const loginScreen = document.getElementById('login-screen');
+        const mainContent = document.getElementById('main-content');
+        const passwordInput = document.getElementById('password-input');
+        const loginBtn = document.getElementById('login-btn');
+        const loginError = document.getElementById('login-error');
+
+        function handleLogin() {
+            const input = passwordInput.value.trim().toLowerCase();
+            if (input === PET_NAME.toLowerCase()) {
+                loginScreen.style.display = 'none';
+                mainContent.style.display = 'block';
+                triggerConfetti();
+            } else {
+                loginError.style.display = 'block';
+                passwordInput.value = '';
+                passwordInput.focus();
+                setTimeout(() => { loginError.style.display = 'none'; }, 2800);
+            }
+        }
+
+        loginBtn.addEventListener('click', handleLogin);
+        passwordInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') handleLogin();
+        });
+
+        // ===== SLIDE NAVIGATION =====
+        let currentSlide = 1;
+        const totalSlides = 5;
+
+        function goToSlide(num) {
+            if (num < 1 || num > totalSlides) return;
+            document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
+            const target = document.getElementById('slide-' + num);
+            if (target) target.classList.add('active');
+            currentSlide = num;
+            if (num === 5) {
+                setTimeout(triggerConfetti, 350);
+            }
+        }
+
+        // ===== CONFETTI (mobile-friendly burst) =====
+        function triggerConfetti() {
+            const duration = 2800;
+            const end = Date.now() + duration;
+            (function frame() {
+                confetti({
+                    particleCount: 4,
+                    startVelocity: 28,
+                    spread: 55,
+                    origin: { y: 0.6 }
+                });
+                if (Date.now() < end) {
+                    requestAnimationFrame(frame);
+                }
+            })();
+        }
+
+        // small extra burst on login
+        window.addEventListener('load', function() {
+            // pre-focus input on mobile
+            if (window.innerWidth < 600) {
+                passwordInput.focus();
+            }
+        });
+    </script>
+</body>
+</html>
